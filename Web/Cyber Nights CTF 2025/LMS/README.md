@@ -55,7 +55,7 @@ if (isset($course['flag']) &&
 - The flag condition checks for specific progress records regardless of how they were obtained
 
 ## Solution Implementation
-I actually wass trying to do it manually but a good friend @Abdullah-Sajid-Qazi made a script to automate it
+I actually wass trying to do it manually but a good friend [@Abdullah-Sajid-Qazi](https://github.com/Abdullah-Sajid-Qazi) made a script to automate it
 
 ### Python Exploit Script
 ```python
