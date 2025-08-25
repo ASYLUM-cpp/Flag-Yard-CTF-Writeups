@@ -94,7 +94,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         target_url = sys.argv[1]
     else:
-        target_url = "http://asylum.playat.flagyard.com"
+        target_url = "Nanana Mny nhi btaani :)"
     
     print(f"Target: {target_url}")
     print("Exploiting the race condition...")
