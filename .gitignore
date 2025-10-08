@@ -1,0 +1,17 @@
+# Compiled binaries
+*.o
+*.exe
+Programming/Print-Queue-System/print_queue
+
+# Generated log files
+Programming/Print-Queue-System/audit.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
