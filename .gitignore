@@ -1,0 +1,8 @@
+array_test
+linkedlist_test
+*.o
+*.out
+audit_log.txt
+audit_log_ll.txt
+checksums.txt
+checksums_ll.txt
